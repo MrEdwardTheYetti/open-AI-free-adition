@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Browser AI</title>
+  <script type="module">
+    import * as webllm from "https://esm.run/@mlc-ai/web-llm";
+
+    let engine;
+
+    async function init() {
+      engine = new webllm.MLCEngine();
+      await engine.reload("Llama-3.1-8B-Instruct-q4f32_1");
+      document.getElementById("status").textContent = "AI Ready";
+    }
+
+    async function ask() {
+      const prompt = document.getElementById("prompt").value;
+      const reply = await engine.chat.completions.create({
+        messages: [{ role: "user", content: prompt }]
+      });
+      document.getElementById("out").textContent =
+        reply.choices[0].message.content;
+    }
+
+    window.ask = ask;
+    init();
+  </script>
+</head>
+
+<body style="background:#111;color:#0f0;font-family:sans-serif">
+  <h2>Browser AI (No Server)</h2>
+  <div id="status">Loading model…</div>
+  <textarea id="prompt" rows="4" style="width:100%"></textarea>
+  <button onclick="ask()">Ask</button>
+  <pre id="out"></pre>
+</body>
+</html>
