@@ -1,17 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8" />
-  <title>Browser AI</title>
+  <meta charset="UTF-8">
+  <title>Browser AI (CPU)</title>
   <script type="module">
     import * as webllm from "https://esm.run/@mlc-ai/web-llm";
 
     let engine;
 
     async function init() {
-      engine = new webllm.MLCEngine();
-      await engine.reload("Llama-3.1-8B-Instruct-q4f32_1");
-      document.getElementById("status").textContent = "AI Ready";
+      const status = document.getElementById("status");
+      status.textContent = "Loading CPU model… (first time takes ~1 min)";
+
+      engine = new webllm.MLCEngine({
+        device: "cpu"   // 👈 FORCE CPU
+      });
+
+      await engine.reload("TinyLlama-1.1B-Chat-v1.0-q4f16_1");
+
+      status.textContent = "AI Ready (CPU Mode)";
     }
 
     async function ask() {
@@ -29,8 +36,8 @@
 </head>
 
 <body style="background:#111;color:#0f0;font-family:sans-serif">
-  <h2>Browser AI (No Server)</h2>
-  <div id="status">Loading model…</div>
+  <h2>Browser AI (CPU / No GPU)</h2>
+  <div id="status">Starting…</div>
   <textarea id="prompt" rows="4" style="width:100%"></textarea>
   <button onclick="ask()">Ask</button>
   <pre id="out"></pre>
